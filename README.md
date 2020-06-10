@@ -13,7 +13,7 @@ This repository contains PyTorch implementation of the following paper: GANomaly
         - [Train on Custom Dataset](#train-on-custom-dataset)
     - [Citing GANomaly](#citing-ganomaly)
     - [Reference](#reference)
-    
+
 
 ## 2. Installation
 1. First clone the repository
@@ -33,15 +33,30 @@ This repository contains PyTorch implementation of the following paper: GANomaly
    pip install --user --requirement requirements.txt
    ```
 
+## 2.1. (optional) Use docker.  
+  1. Build a docker image.
+    ```
+    sudo docker build -t ganomaly .
+    ```
+  2. Run the docker container.
+    ```
+    docker run --gpus all -it --rm -v ${PWD}:/workspace ganomaly
+    ```
+  3. Activate the virtual envirinment.
+    ```
+    source activate
+    conda activate ganomaly
+    ```
+
 ## 3. Experiment
 To replicate the results in the paper for MNIST and CIFAR10  datasets, run the following commands:
 
 ``` shell
 # MNIST
-sh experiments/run_mnist.sh
+bash experiments/run_mnist.sh
 
 # CIFAR
-sh experiments/run_cifar.sh # CIFAR10
+bash experiments/run_cifar.sh # CIFAR10
 ```
 
 ## 4. Training
@@ -53,7 +68,7 @@ python train.py -h
 ### 4.1. Training on MNIST
 To train the model on MNIST dataset for a given anomaly class, run the following:
 
-``` 
+```
 python train.py \
     --dataset mnist                         \
     --niter <number-of-epochs>              \
@@ -64,7 +79,7 @@ python train.py \
 ### 4.2. Training on CIFAR10
 To train the model on CIFAR10 dataset for a given anomaly class, run the following:
 
-``` 
+```
 python train.py \
     --dataset cifar10                                                   \
     --niter <number-of-epochs>                                          \
