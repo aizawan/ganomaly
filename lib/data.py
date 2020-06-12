@@ -14,6 +14,8 @@ from torchvision.datasets import CIFAR10
 from torchvision.datasets import ImageFolder
 import torchvision.transforms as transforms
 
+from lib.mvtec import MVTecAD
+
 ##
 def load_data(opt):
     """ Load Data
@@ -153,6 +155,31 @@ def load_data(opt):
                                                      else lambda x: np.random.seed(opt.manualseed)))
                       for x in splits}
         return dataloader
+    
+    elif opt.dataset in ['mvtec']:
+        splits = ['train', 'test']
+        drop_last_batch = {'train': True, 'test': False}
+        shuffle = {'train': True, 'test': True}
+        transform = transforms.Compose([transforms.Resize(opt.isize),
+                                        transforms.RandomRotation(45),
+                                        transforms.CenterCrop(opt.isize),
+                                        transforms.ToTensor(),
+                                        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), ])
+        
+        dataset = {}
+        dataset['train'] = MVTecAD(root='./data/mvtec', category='metal_nut', train=True, transform=transform)
+        dataset['test'] = MVTecAD(root='./data/mvtec', category='metal_nut', train=False, transform=transform)
+        
+        dataloader = {x: torch.utils.data.DataLoader(dataset=dataset[x],
+                                                     batch_size=opt.batchsize,
+                                                     shuffle=shuffle[x],
+                                                     num_workers=int(opt.workers),
+                                                     drop_last=drop_last_batch[x],
+                                                     worker_init_fn=(None if opt.manualseed == -1
+                                                     else lambda x: np.random.seed(opt.manualseed)))
+                      for x in splits}
+        return dataloader
+        
 
     else:
         splits = ['train', 'test']
